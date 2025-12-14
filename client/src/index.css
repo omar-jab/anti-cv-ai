@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap");
+
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -5,6 +7,23 @@
 
 @custom-variant dark (&:is(.dark *));
 @source "../node_modules/streamdown/dist/index.js";
+
+body {
+  font-family: "JetBrains Mono", monospace;
+}
+
+@keyframes progress-indeterminate {
+  0% {
+    transform: translateX(-80%);
+  }
+  100% {
+    transform: translateX(320%);
+  }
+}
+
+.progress-indeterminate {
+  animation: progress-indeterminate 1.2s ease-in-out infinite;
+}
 
 :root {
   --background: oklch(1 0 0);

@@ -1,0 +1,5 @@
+-- Campi profilo aggiuntivi per utente
+
+ALTER TABLE users ADD COLUMN phone TEXT;
+ALTER TABLE users ADD COLUMN city TEXT;
+ALTER TABLE users ADD COLUMN birth_date TEXT;

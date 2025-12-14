@@ -1,48 +1,51 @@
 import {
   PromptInput,
-  PromptInputAttachment,
-  PromptInputAttachments,
   PromptInputBody,
   PromptInputSubmit,
   PromptInputTextarea,
   PromptInputFooter,
-  PromptInputHeader,
+  PromptInputProvider,
+  usePromptInputAttachments,
+  usePromptInputController,
+  type PromptInputMessage,
 } from "@/components/ai-elements/prompt-input";
 import type { ChatStatus } from "ai";
-import { useRef } from "react";
 
 interface Props {
-  prompt: string;
-  setPrompt: (value: string) => void;
-  handleSubmit: () => void;
+  handleSubmit: (message: PromptInputMessage) => void | Promise<void>;
   status: ChatStatus;
+  disabled?: boolean;
 }
 
-export default function ChatInput({
-  prompt,
-  setPrompt,
-  handleSubmit,
-  status,
-}: Props) {
-  const textareaRef = useRef(null);
+function ChatInputInner({ handleSubmit, status, disabled }: Props) {
+  const { textInput } = usePromptInputController();
+  const attachments = usePromptInputAttachments();
+
+  const canSubmit =
+    textInput.value.trim().length > 0 || attachments.files.length > 0;
 
   return (
-    <PromptInput onSubmit={handleSubmit} className="mt-4" globalDrop multiple>
-      <PromptInputHeader>
-        <PromptInputAttachments>
-          {(attachment) => <PromptInputAttachment data={attachment} />}
-        </PromptInputAttachments>
-      </PromptInputHeader>
+    <PromptInput
+      onSubmit={handleSubmit}
+      className="mt-4 rounded-3xl!"
+      globalDrop
+      multiple
+    >
       <PromptInputBody>
-        <PromptInputTextarea
-          onChange={(e) => setPrompt(e.target.value)}
-          ref={textareaRef}
-          value={prompt}
-        />
+        <PromptInputTextarea placeholder="Inizia a scrivere" />
       </PromptInputBody>
       <PromptInputFooter>
-        <PromptInputSubmit disabled={!prompt && !status} status={status} />
+        <div></div>
+        <PromptInputSubmit disabled={disabled || !canSubmit} status={status} />
       </PromptInputFooter>
     </PromptInput>
+  );
+}
+
+export default function ChatInput(props: Props) {
+  return (
+    <PromptInputProvider>
+      <ChatInputInner {...props} />
+    </PromptInputProvider>
   );
 }

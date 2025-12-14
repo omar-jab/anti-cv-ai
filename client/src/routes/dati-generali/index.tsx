@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
+import AvatarGenerator from "@/components/avatar/avatar-generator";
+import { Separator } from "@/components/ui/separator"; // Assumo l'uso di un Separator sottile
 
 type PersonaFormData = {
   nome: string;
@@ -38,14 +40,18 @@ export default function PersonaPage() {
     }
   };
 
+  // La sezione di sinistra è dedicata all'input; deve essere pulita e focalizzata.
   return (
-    <div className="w-full h-full flex">
-      <div className="flex-1">
-        <div className="p-4">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div>
-              <h2>Generalità</h2>
-            </div>
+    <div className="flex w-full h-full min-h-screen bg-white">
+      {/* Colonna Input Dati (Focus) */}
+      <div className="flex-1 max-w-2xl mx-auto p-8">
+        <h1 className="text-2xl font-semibold mb-6">Modifica Profilo</h1>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+          {/* Sezione: Generalità */}
+          <div className="space-y-6">
+            <h2 className="text-lg font-medium tracking-tight">Generalità</h2>
+            <Separator className="bg-neutral-100" />
+
             {/* Nome e Cognome */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -54,9 +60,10 @@ export default function PersonaPage() {
                   id="nome"
                   {...register("nome", { required: "Nome richiesto" })}
                   aria-invalid={!!errors.nome}
+                  className="rounded-md" // Bordi leggermente arrotondati
                 />
                 {errors.nome && (
-                  <p className="text-xs text-destructive">
+                  <p className="text-xs text-red-600 mt-1">
                     {errors.nome.message}
                   </p>
                 )}
@@ -68,65 +75,11 @@ export default function PersonaPage() {
                   id="cognome"
                   {...register("cognome", { required: "Cognome richiesto" })}
                   aria-invalid={!!errors.cognome}
+                  className="rounded-md"
                 />
                 {errors.cognome && (
-                  <p className="text-xs text-destructive">
+                  <p className="text-xs text-red-600 mt-1">
                     {errors.cognome.message}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Dati di contatto */}
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold">Dati di contatto</h2>
-
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  {...register("email", {
-                    required: "Email richiesta",
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Email non valida",
-                    },
-                  })}
-                  aria-invalid={!!errors.email}
-                />
-                {errors.email && (
-                  <p className="text-xs text-destructive">
-                    {errors.email.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="telefono">Numero di telefono</Label>
-                <Input
-                  id="telefono"
-                  type="tel"
-                  {...register("telefono", { required: "Numero richiesto" })}
-                  aria-invalid={!!errors.telefono}
-                />
-                {errors.telefono && (
-                  <p className="text-xs text-destructive">
-                    {errors.telefono.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="citta">Città</Label>
-                <Input
-                  id="citta"
-                  {...register("citta", { required: "Città richiesta" })}
-                  aria-invalid={!!errors.citta}
-                />
-                {errors.citta && (
-                  <p className="text-xs text-destructive">
-                    {errors.citta.message}
                   </p>
                 )}
               </div>
@@ -142,58 +95,132 @@ export default function PersonaPage() {
                   required: "Data di nascita richiesta",
                 })}
                 aria-invalid={!!errors.dataNascita}
+                className="rounded-md"
               />
               {errors.dataNascita && (
-                <p className="text-xs text-destructive">
+                <p className="text-xs text-red-600 mt-1">
                   {errors.dataNascita.message}
                 </p>
               )}
             </div>
 
-            {/* Upload immagine */}
-            <div className="space-y-2">
-              <Label htmlFor="immagine">Immagine</Label>
-              <Input
-                id="immagine"
-                type="file"
-                accept="image/*"
-                {...register("immagine", { required: "Immagine richiesta" })}
-                onChange={(e) => {
-                  register("immagine").onChange(e);
-                  handleImageChange(e);
-                }}
-                aria-invalid={!!errors.immagine}
-              />
-              {errors.immagine && (
-                <p className="text-xs text-destructive">
-                  {errors.immagine.message}
-                </p>
-              )}
-
-              {imagePreview && (
-                <div className="mt-4">
-                  <img
-                    src={imagePreview}
-                    alt="Preview"
-                    className="w-32 h-32 object-cover rounded-md border"
-                  />
+            {/* Upload immagine e Preview */}
+            <div className="space-y-4 pt-2">
+              <Label htmlFor="immagine">Immagine Profilo</Label>
+              <div className="flex items-start gap-4">
+                <div className="size-24 object-cover rounded-md border border-neutral-200 flex-shrink-0 bg-neutral-50 overflow-hidden">
+                  {imagePreview ? (
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-xs text-neutral-500">
+                      Nessuna Immagine
+                    </div>
+                  )}
                 </div>
-              )}
+                <div className="flex-1 space-y-2">
+                  <Input
+                    id="immagine"
+                    type="file"
+                    accept="image/*"
+                    {...register("immagine", {
+                      required: "Immagine richiesta",
+                    })}
+                    onChange={(e) => {
+                      register("immagine").onChange(e);
+                      handleImageChange(e);
+                    }}
+                    aria-invalid={!!errors.immagine}
+                    className="rounded-md"
+                  />
+                  {errors.immagine && (
+                    <p className="text-xs text-red-600 mt-1">
+                      {errors.immagine.message}
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
+          </div>
 
-            <Button type="submit" className="w-full">
-              Salva
-            </Button>
-          </form>
-        </div>
+          {/* Sezione: Dati di contatto */}
+          <div className="space-y-6 pt-4">
+            <h2 className="text-lg font-medium tracking-tight">
+              Dati di Contatto
+            </h2>
+            <Separator className="bg-neutral-100" />
+
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  {...register("email", {
+                    required: "Email richiesta",
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: "Email non valida",
+                    },
+                  })}
+                  aria-invalid={!!errors.email}
+                  className="rounded-md"
+                />
+                {errors.email && (
+                  <p className="text-xs text-red-600 mt-1">
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="telefono">Numero di telefono</Label>
+                <Input
+                  id="telefono"
+                  type="tel"
+                  {...register("telefono", { required: "Numero richiesto" })}
+                  aria-invalid={!!errors.telefono}
+                  className="rounded-md"
+                />
+                {errors.telefono && (
+                  <p className="text-xs text-red-600 mt-1">
+                    {errors.telefono.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="citta">Città</Label>
+                <Input
+                  id="citta"
+                  {...register("citta", { required: "Città richiesta" })}
+                  aria-invalid={!!errors.citta}
+                  className="rounded-md"
+                />
+                {errors.citta && (
+                  <p className="text-xs text-red-600 mt-1">
+                    {errors.citta.message}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <Button type="submit" className="w-full mt-8 rounded-md">
+            Salva Profilo
+          </Button>
+        </form>
       </div>
 
-      <div className="flex-1 border-l border-l-neutral-100">
-        <div className="p-4">
-          <div>
-            <h2>Preview</h2>
-          </div>
-        </div>
+      {/* Colonna Preview/Avatar (Nativa, non rumorosa) */}
+      <div className="w-96 p-8 border-l border-neutral-100 bg-neutral-50 flex-shrink-0">
+        <h2 className="text-lg font-medium tracking-tight mb-6">
+          Strumenti AI
+        </h2>
+        <AvatarGenerator />
       </div>
     </div>
   );

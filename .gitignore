@@ -24,3 +24,9 @@ dist/
 coverage/
 .eslintcache
 *.tsbuildinfo
+
+# Databases
+*.sqlite
+*.sqlite3
+*.db
+server/data/

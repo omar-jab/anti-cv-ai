@@ -1,23 +1,38 @@
-import { MessageSquare } from "lucide-react";
 import {
   ConversationContent,
   ConversationEmptyState,
 } from "@/components/ai-elements/conversation";
 import type { UIMessage } from "ai";
 import ChatMessage from "@/components/chat/chat-message";
+import { Button } from "../ui/button";
 
 interface Props {
   messages: UIMessage[];
+  onInit?: () => void;
+  initDisabled?: boolean;
+  initLabel?: string;
 }
 
-export default function ChatMessages({ messages }: Props) {
+export default function ChatMessages({
+  messages,
+  onInit,
+  initDisabled,
+  initLabel,
+}: Props) {
   if (messages.length === 0 || !messages) {
     return (
-      <ConversationEmptyState
-        icon={<MessageSquare className="size-12" />}
-        title="Inizia la conversazione"
-        description="Inizia a scrivere"
-      />
+      <ConversationEmptyState>
+        <p>
+          {onInit
+            ? "Conversazione vuota, clicca il pulsante se vuoi iniziare!"
+            : "Scrivi un messaggio per iniziare la conversazione."}
+        </p>
+        {onInit && (
+          <Button onClick={onInit} disabled={initDisabled}>
+            {initLabel ?? "Inizia Ora"}
+          </Button>
+        )}
+      </ConversationEmptyState>
     );
   }
 
