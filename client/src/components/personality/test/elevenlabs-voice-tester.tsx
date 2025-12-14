@@ -248,7 +248,14 @@ export default function ElevenLabsVoiceTester() {
     const transport = useMemo(() => {
         return new DefaultChatTransport({
             api: getApiUrl("/api/chat/persona"),
-            headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
+            headers: async () => {
+                const token = authToken ?? (await getToken());
+                if (!token) {
+                    console.warn("[ElevenLabs] No token available for request");
+                    return {};
+                }
+                return { Authorization: `Bearer ${token}` };
+            },
             prepareSendMessagesRequest: ({ messages, messageId }) => {
                 const sid = sessionIdRef.current;
                 if (!sid) {
@@ -268,7 +275,7 @@ export default function ElevenLabsVoiceTester() {
                 };
             },
         });
-    }, [authToken]);
+    }, [authToken, getToken]);
 
     const { messages, sendMessage, status, error, clearError } = useChat({
         id: chatInstanceId,

@@ -54,7 +54,12 @@ function UserChatPageError() {
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <div>Hello World</div>,
+    element: (
+      <div>
+        Ciao! Inserisci il profilo nell'url per vedere la pagina del singolo
+        utente @nome
+      </div>
+    ),
   },
   {
     path: "/:user_handle",

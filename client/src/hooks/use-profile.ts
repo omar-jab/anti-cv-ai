@@ -30,7 +30,8 @@ function parseProfile(value: unknown): UserProfile | null {
     const birthDate = typeof value.birthDate === "string" ? value.birthDate : null;
     const imageUrl = typeof value.imageUrl === "string" ? value.imageUrl : null;
     const updatedAt = typeof value.updatedAt === "string" ? value.updatedAt : null;
-    const handle = typeof value.handle === "string" ? value.handle : null;
+    // Handle può essere string o null
+    const handle = typeof value.handle === "string" ? value.handle : value.handle === null ? null : null;
 
     return { firstName, lastName, email, phone, city, birthDate, imageUrl, updatedAt, handle };
 }
@@ -67,6 +68,7 @@ async function updateProfile(params: {
         phone?: string;
         city?: string;
         birthDate?: string;
+        handle?: string;
         image?: File | null;
     };
 }) {
@@ -80,6 +82,9 @@ async function updateProfile(params: {
     if (params.input.city?.trim()) formData.set("city", params.input.city.trim());
     if (params.input.birthDate?.trim()) {
         formData.set("birthDate", params.input.birthDate.trim());
+    }
+    if (params.input.handle?.trim()) {
+        formData.set("handle", params.input.handle.trim());
     }
     if (params.input.image) {
         formData.set("image", params.input.image);
@@ -127,6 +132,7 @@ export function useProfile() {
             phone?: string;
             city?: string;
             birthDate?: string;
+            handle?: string;
             image?: File | null;
         }
     >({
