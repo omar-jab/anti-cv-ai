@@ -29,11 +29,24 @@ import { GetPublicUserData } from "./controllers/public-user-data";
 import { dbMiddleware, getDb } from "./db";
 import { authMiddleware, type AppEnvWithAuth } from "./middleware/auth";
 import dotenv from "dotenv";
+import { cors } from "hono/cors";
 
 getDb();
 
 const app = new Hono<AppEnvWithAuth>();
 dotenv.config();
+
+app.use(
+  "/*",
+  cors({
+    origin: "*",
+    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allowHeaders: ["Content-Type", "Authorization", "X-Custom-Header"],
+    exposeHeaders: ["Content-Length"],
+    maxAge: 600,
+    credentials: true,
+  }),
+);
 
 app.use("*", dbMiddleware);
 app.use("*", authMiddleware);
